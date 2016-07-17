@@ -6,7 +6,6 @@
 package FiboStopWatch;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
@@ -53,7 +52,7 @@ public final class FiboStopWatch extends Application {
         StackPane startPane = new StackPane();
         startPane.getChildren().add(btnStart);
         // botton action
-        btnStart.setOnAction((ActionEvent event) -> {
+        btnStart.setOnAction(e -> {
             System.out.println("Start!");
             timer_count.start();
         });
@@ -62,7 +61,7 @@ public final class FiboStopWatch extends Application {
         // Stop botton
         Button btnStop = new Button();
         btnStop.setText("Stop");
-        btnStop.setOnAction((ActionEvent event) -> {
+        btnStop.setOnAction(e -> {
             timer_count.stop();
         });
 
@@ -70,7 +69,7 @@ public final class FiboStopWatch extends Application {
         // Reset botton
         Button btnReset = new Button();
         btnReset.setText("Reset");
-        btnReset.setOnAction((ActionEvent event) -> {
+        btnReset.setOnAction(e -> {
             timer_count.reset();
         });
 
