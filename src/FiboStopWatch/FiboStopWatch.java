@@ -7,6 +7,7 @@ package FiboStopWatch;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
@@ -23,19 +24,27 @@ import java.time.Duration;
 import java.time.Instant;
 import javafx.scene.paint.Color;
 import java.util.*;
+import javafx.event.Event;
 
 
 /**
  *
  * @author steav
  */
-public final class FiboStopWatch extends Application {
+public final class FiboStopWatch extends Application implements EventHandler<ActionEvent>{
+    // Field variable
+    private Button btnStart;
+    private TimerLabel timer_count;
+    private Button btnStop;
+    private Button btnReset;
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String... args) {
         launch(args);
     }
+        
     
     @Override
     public void start(Stage primaryStage) {
@@ -44,35 +53,23 @@ public final class FiboStopWatch extends Application {
         window = primaryStage;
         window.setTitle("Timer!");
         
-        TimerLabel timer_count = new TimerLabel();
+        timer_count = new TimerLabel();
 
         // botton 
-        Button btnStart = new Button();
+        btnStart = new Button();
         btnStart.setText("Start");
-        // start button panel
-        StackPane startPane = new StackPane();
-        startPane.getChildren().add(btnStart);
-        // botton action
-        btnStart.setOnAction((ActionEvent event) -> {
-            System.out.println("Start!");
-            timer_count.start();
-        });
-
+        btnStart.setOnAction(this);
 
         // Stop botton
-        Button btnStop = new Button();
+        btnStop = new Button();
         btnStop.setText("Stop");
-        btnStop.setOnAction((ActionEvent event) -> {
-            timer_count.stop();
-        });
+        btnStop.setOnAction(this);
 
         
         // Reset botton
-        Button btnReset = new Button();
+        btnReset = new Button();
         btnReset.setText("Reset");
-        btnReset.setOnAction((ActionEvent event) -> {
-            timer_count.reset();
-        });
+        btnReset.setOnAction(this);
 
         
         HBox hbox = new HBox(btnStart, btnStop, btnReset);
@@ -84,11 +81,25 @@ public final class FiboStopWatch extends Application {
         
         // main window
         Scene scene = new Scene(vbox, 200, 150);
-
-        
         window.setScene(scene);
         window.show();
     }
+
+    @Override
+    public void handle(ActionEvent event) {
+        if (event.getSource()==btnStart) {
+            System.out.println("Start!");
+            timer_count.start();
+        }
+        if (event.getSource()==btnStop) {
+            timer_count.stop();
+        }
+        if (event.getSource()==btnReset) {
+            timer_count.reset();
+        }
+    }
+    
+    
 }
 
 final class TimerLabel extends Label {
@@ -107,6 +118,7 @@ final class TimerLabel extends Label {
     public void start() {
         if (start != null) {
             System.out.println(start);
+            timeline.stop();
             return;
         }
         start = Instant.now(); 
