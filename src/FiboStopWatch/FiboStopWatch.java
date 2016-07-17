@@ -8,7 +8,6 @@ package FiboStopWatch;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
@@ -35,7 +34,7 @@ public final class FiboStopWatch extends Application {
     public static void main(String... args) {
         launch(args);
     }
-    
+        
     @Override
     public void start(Stage primaryStage) {
         Stage window;
@@ -48,9 +47,6 @@ public final class FiboStopWatch extends Application {
         // botton 
         Button btnStart = new Button();
         btnStart.setText("Start");
-        // start button panel
-        StackPane startPane = new StackPane();
-        startPane.getChildren().add(btnStart);
         // botton action
         btnStart.setOnAction(e -> {
             System.out.println("Start!");
@@ -83,13 +79,11 @@ public final class FiboStopWatch extends Application {
         
         // main window
         Scene scene = new Scene(vbox, 200, 150);
-
-        
         window.setScene(scene);
         window.show();
     }
 }
-
+    
 final class TimerLabel extends Label {
     // field variable
     private final StringProperty mmssTime = new SimpleStringProperty("00:00");
@@ -106,6 +100,7 @@ final class TimerLabel extends Label {
     public void start() {
         if (start != null) {
             System.out.println(start);
+            timeline.stop();
             return;
         }
         start = Instant.now(); 
