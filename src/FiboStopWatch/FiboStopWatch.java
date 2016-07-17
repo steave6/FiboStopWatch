@@ -30,6 +30,12 @@ import java.util.*;
  * @author steav
  */
 public final class FiboStopWatch extends Application {
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String... args) {
+        launch(args);
+    }
     
     @Override
     public void start(Stage primaryStage) {
@@ -82,13 +88,6 @@ public final class FiboStopWatch extends Application {
         
         window.setScene(scene);
         window.show();
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String... args) {
-        launch(args);
     }
 }
 
