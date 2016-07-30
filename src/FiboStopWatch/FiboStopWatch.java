@@ -34,7 +34,7 @@ public final class FiboStopWatch extends Application {
     public static void main(String... args) {
         launch(args);
     }
-        
+
     @Override
     public void start(Stage primaryStage) {
         Stage window;
@@ -42,6 +42,7 @@ public final class FiboStopWatch extends Application {
         window = primaryStage;
         window.setTitle("Timer!");
         
+        // タイマーをインスタンス化
         TimerLabel timer_count = new TimerLabel();
 
         // botton 
@@ -53,14 +54,12 @@ public final class FiboStopWatch extends Application {
             timer_count.start();
         });
 
-
         // Stop botton
         Button btnStop = new Button();
         btnStop.setText("Stop");
         btnStop.setOnAction(e -> {
             timer_count.stop();
         });
-
         
         // Reset botton
         Button btnReset = new Button();
@@ -68,12 +67,12 @@ public final class FiboStopWatch extends Application {
         btnReset.setOnAction(e -> {
             timer_count.reset();
         });
-
         
+        // 下段のボタンを整列
         HBox hbox = new HBox(btnStart, btnStop, btnReset);
         hbox.setAlignment(Pos.BOTTOM_CENTER);
-
         
+        // 上段のタイマー部と下段のボタン部を整列
         VBox vbox = new VBox(timer_count, hbox);
         vbox.setAlignment(Pos.CENTER);
         
@@ -83,32 +82,42 @@ public final class FiboStopWatch extends Application {
         window.show();
     }
 }
-    
+
+/**
+ * ラベルクラスを承継し今回のタイマーで使うラベルとして機能を付与します。
+ * @author steav
+ */
 final class TimerLabel extends Label {
     // field variable
     private final StringProperty mmssTime = new SimpleStringProperty("00:00");
     private Timeline timeline;
-    private Boolean onFlag = true;
+    private Boolean onFlag;
     private Instant start;
-    Duration time;
-    Duration lasttime;
+    private Duration time;
+    private Duration lasttime;
+    private List<Integer> Fibolist;
 
     public TimerLabel() {
-        this.textProperty().bind(mmssTime);
-        this.setTextFill(Color.NAVY);
-        this.setStyle("-fx-font-size: 4em;");
+        this.textProperty().bind(mmssTime);// data binding
+        this.setTextFill(Color.NAVY);// Color setting
+        this.setStyle("-fx-font-size: 4em;");// make timer bigger
         this.lasttime = Duration.ZERO;
+        Fibolist = Fibonacci(100);
     }
     
+    /**
+     * 
+     */
     public void start() {
         onFlag = true;
-        start = Instant.now();
+        start = Instant.now();// タイマーの基準時
+        // 反復処理
         timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(10),
                 e2 -> {
-                    if (onFlag) {
-                        time = Duration.between(start, Instant.now());
-                        time = time.plus(lasttime);
-                        mmssTime.set(maketimeString(time));
+                    if (onFlag) {// このフラグでタイマーの実行を制御
+                        time = Duration.between(start, Instant.now());// 基準時との差
+                        time = time.plus(lasttime);// 前回スタートした際に経過した時間をプラス
+                        mmssTime.set(maketimeString(time));// タイマーを表示するメソッドの呼出し
                     }else {
                         timeline.stop();
                     }
@@ -119,11 +128,18 @@ final class TimerLabel extends Label {
         timeline.play();
     }
     
+    /**
+     * フラグを操作しタイマーの実行を停止
+     * 加えて、累積の経過時間を保持
+     */
     public void stop(){
         lasttime = time;
         onFlag = false;
     }
     
+    /**
+     * タイマー停止、各種設定を初期化
+     */
     protected void reset() {
         mmssTime.set(maketimeString(Duration.ZERO));
         start = null;
@@ -132,11 +148,18 @@ final class TimerLabel extends Label {
         onFlag = false;
     }
     
+    /**
+     * タイマーの表示を担当するメソッド
+     * @param time
+     * @return 
+     */
     private String maketimeString(Duration time) {
+        // 秒数を分と秒に分離
         String isTime = String.format("%02d:%02d"
                 ,time.toMinutes()
                 ,time.getSeconds() % 60
             );
+        // フィボナッチ数列かを判定しタイマーの色を変更
         if (isFibonacci((int)time.getSeconds())) {
             this.setTextFill(Color.CRIMSON);
         } else {
@@ -145,16 +168,26 @@ final class TimerLabel extends Label {
 
         return isTime;
     }
-    private Boolean isFibonacci(int second){
-        ArrayList<Integer> fibolist = Fibonacci(100);
-        return fibolist.contains(second);
+    
+    /**
+     * フィボナッチ数列か否かを判定
+     * @param num フィボナッチ数列を何個まで計算するかを決定
+     * @return boolean
+     */
+    private boolean isFibonacci(int num){
+        return Fibolist.contains(num);
     }
     
-    private ArrayList<Integer> Fibonacci(int iterate){
+    /**
+     * フィボナッチ数列を生成し返り値とする
+     * @param iterate
+     * @return Listとしてフィボナッチ数列をreturn
+     */
+    private List<Integer> Fibonacci(int iterate){
         Integer temp;
         Integer num1 = 1;
         Integer num2 = 1;
-        ArrayList<Integer> fibolist = new ArrayList<>();
+        List<Integer> fibolist = new ArrayList<>();
         fibolist.add(num1);
         fibolist.add(num2);
         for (int i = 0; i < iterate; i++) {
