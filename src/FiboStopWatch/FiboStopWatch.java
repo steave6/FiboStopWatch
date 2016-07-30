@@ -90,25 +90,26 @@ final class TimerLabel extends Label {
     private Timeline timeline;
     private Boolean onFlag = true;
     private Instant start;
+    Duration time;
+    Duration lasttime;
 
     public TimerLabel() {
         this.textProperty().bind(mmssTime);
         this.setTextFill(Color.NAVY);
         this.setStyle("-fx-font-size: 4em;");
+        this.lasttime = Duration.ZERO;
     }
     
     public void start() {
-        if (start != null) {
-            System.out.println(start);
-            timeline.stop();
-            return;
-        }
-        start = Instant.now(); 
+        onFlag = true;
+        start = Instant.now();
         timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(10),
                 e2 -> {
-                    Duration time = Duration.between(start, Instant.now());
-                    mmssTime.set(maketimeString(time));
-                    if (!onFlag) {
+                    if (onFlag) {
+                        time = Duration.between(start, Instant.now());
+                        time = time.plus(lasttime);
+                        mmssTime.set(maketimeString(time));
+                    }else {
                         timeline.stop();
                     }
                 }
@@ -119,13 +120,16 @@ final class TimerLabel extends Label {
     }
     
     public void stop(){
+        lasttime = time;
         onFlag = false;
     }
     
     protected void reset() {
         mmssTime.set(maketimeString(Duration.ZERO));
         start = null;
-        onFlag = true;
+        time = Duration.ZERO;
+        lasttime = Duration.ZERO;
+        onFlag = false;
     }
     
     private String maketimeString(Duration time) {
